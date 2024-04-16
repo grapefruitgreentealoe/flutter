@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:toonflix/widgets/button.dart';
 import 'package:toonflix/widgets/card.dart';
+import 'package:toonflix/widgets/plan_card.dart';
 
 void main() {
   runApp(App());
@@ -32,115 +33,151 @@ class App extends StatelessWidget {
                 height: 10,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: const [
-                  Column(),
-                  Column(
-                    children: [
-                      Text(
-                        'Hey,Eunsun',
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: CircleAvatar(
+                      backgroundImage: AssetImage('../assets/images/man.JPG'),
+                    ),
+                  ),
+                  Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        '+',
                         style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 38,
-                            fontWeight: FontWeight.w800),
-                      ),
-                      Text(
-                        'Welcome back',
-                        style: TextStyle(
-                            color: Color.fromRGBO(255, 255, 255, 0.8),
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  )
+                          color: Colors.white,
+                          fontSize: 50,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ))
                 ],
               ),
               SizedBox(
                 height: 20,
               ),
               Text(
-                'Total Balance',
+                'MONDAY 16',
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: 15,
                   color: Color.fromRGBO(250, 250, 250, 0.8),
                 ),
               ),
-              SizedBox(height: 10),
-              Text(
-                '\$5 194 482',
-                style: TextStyle(
-                  fontSize: 44,
-                  fontWeight: FontWeight.w800,
-                  color: Color.fromRGBO(250, 250, 250, 1),
+              SizedBox(height: 5),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: const [
+                    Text(
+                      'TODAY',
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.w600,
+                        color: Color.fromRGBO(250, 250, 250, 1),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      '·',
+                      style: TextStyle(
+                        fontSize: 44,
+                        fontWeight: FontWeight.w800,
+                        color: Color.fromRGBO(178, 37, 129, 1),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      '17',
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.w600,
+                        color: Color.fromRGBO(118, 118, 118, 1),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      '18',
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.w600,
+                        color: Color.fromRGBO(118, 118, 118, 1),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      '19',
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.w600,
+                        color: Color.fromRGBO(118, 118, 118, 1),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      '20',
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.w600,
+                        color: Color.fromRGBO(118, 118, 118, 1),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Button(
-                      text: 'Transfer',
-                      bgColor: Colors.amber,
-                      textColor: Color(0xFF1F2123)),
-                  Button(
-                      text: 'Request',
-                      bgColor: Color(0xFF1F2123),
-                      textColor: Colors.white),
-                ],
-              ),
-              SizedBox(
-                height: 100,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    'Wallets',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 36,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    'View All',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              CurrencyCard(
-                name: 'EURO',
+              PlanCard(
+                nameList: const ['ALEX', 'HELENA', 'NANA'],
+                name: 'DESING\nMEETING',
                 code: 'EUR',
-                amount: '6 428',
+                startDay: '30',
+                startMonth: '11',
+                endDay: '20',
+                endMonth: '12',
                 icon: Icons.euro_rounded,
-                isInverted: false,
+                bgColor: Color.fromRGBO(254, 247, 84, 1),
               ),
-              Transform.translate(
-                offset: Offset(0, -20),
-                child: CurrencyCard(
-                  name: 'Bitcoin',
-                  code: 'BTC',
-                  amount: '9 748',
-                  icon: Icons.currency_bitcoin_rounded,
-                  isInverted: true,
-                ),
+              SizedBox(
+                height: 10,
               ),
-              Transform.translate(
-                offset: Offset(0, -40),
-                child: CurrencyCard(
-                  name: 'Dollar',
-                  code: 'USD',
-                  amount: '2 428',
-                  icon: Icons.attach_money_outlined,
-                  isInverted: false,
-                ),
+              PlanCard(
+                nameList: const ['ME', 'RECHARD', 'CIRY'],
+                name: 'DESING\nPROJECT',
+                code: 'EUR',
+                plusCount: '4',
+                startDay: '35',
+                startMonth: '12',
+                endDay: '10',
+                endMonth: '14',
+                icon: Icons.euro_rounded,
+                bgColor: Color.fromRGBO(156, 107, 206, 1),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              PlanCard(
+                nameList: const ['DEN', 'NANA', 'MARK'],
+                name: 'WEEKLY\nPLANNING',
+                code: 'EUR',
+                startDay: '00',
+                startMonth: '15',
+                endDay: '30',
+                endMonth: '16',
+                icon: Icons.euro_rounded,
+                bgColor: Color.fromRGBO(161, 200, 78, 1),
               ),
             ],
           ),
