@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 class HomseScreen extends StatefulWidget {
@@ -10,18 +9,25 @@ class HomseScreen extends StatefulWidget {
 }
 
 class _HomseScreenState extends State<HomseScreen> {
-  static const twentyFiveMinutes = 1500;
-  int totalSeconds = twentyFiveMinutes;
+  int checkedTime = 25;
+  int totalSeconds = 25;
   bool isRunning = false;
   int totalPomodoros = 0;
-  late Timer timer; //나중에 지정해준다
+  bool isRestTime = false;
+  late Timer timer;
+
+  get scrollController => null; //나중에 지정해준다
 
   void onTick(Timer timer) {
-    if (totalSeconds == 0) {
+    if (totalSeconds == 0 && !isRestTime) {
+      totalSeconds = 6;
+      totalPomodoros += 1;
+      isRestTime = true;
+    } else if (isRestTime && totalSeconds == 0) {
       setState(() {
-        totalPomodoros += 1;
+        isRestTime = false;
         isRunning = false;
-        totalSeconds = twentyFiveMinutes;
+        totalSeconds = checkedTime;
       });
       timer.cancel();
     } else {
@@ -47,7 +53,7 @@ class _HomseScreenState extends State<HomseScreen> {
 
   void onResetPressed() {
     setState(() {
-      totalSeconds = twentyFiveMinutes;
+      totalSeconds = isRestTime ? 6 : checkedTime;
     });
   }
 
@@ -58,8 +64,10 @@ class _HomseScreenState extends State<HomseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Color backgroundColor =
+        isRestTime ? Colors.green : Theme.of(context).colorScheme.background;
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: backgroundColor,
       body: Column(
         children: [
           Flexible(
@@ -73,6 +81,46 @@ class _HomseScreenState extends State<HomseScreen> {
                         fontSize: 89,
                         fontWeight: FontWeight.w600),
                   ))),
+          isRestTime
+              ? const Text("")
+              : Flexible(
+                  flex: 1,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          for (var i in [1, 20, 25, 30, 35])
+                            Container(
+                              decoration: const BoxDecoration(),
+                              child: TextButton(
+                                  onPressed: () => {
+                                        setState(() {
+                                          checkedTime = i;
+                                          totalSeconds = i;
+                                        })
+                                      },
+                                  style: ButtonStyle(
+                                    alignment: Alignment.center,
+                                    backgroundColor: checkedTime == i
+                                        ? MaterialStatePropertyAll(
+                                            Theme.of(context).cardColor)
+                                        : MaterialStatePropertyAll(
+                                            backgroundColor),
+                                  ),
+                                  child: Text(
+                                    '$i',
+                                    style: TextStyle(
+                                      color: checkedTime == i
+                                          ? backgroundColor
+                                          : Theme.of(context).cardColor,
+                                      fontSize: 50,
+                                    ),
+                                  )),
+                            ),
+                        ]),
+                  )),
           Flexible(
               flex: 3,
               child: Row(
@@ -106,26 +154,54 @@ class _HomseScreenState extends State<HomseScreen> {
                     child: Container(
                         decoration:
                             BoxDecoration(color: Theme.of(context).cardColor),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Text('Pomodoros',
-                                style: TextStyle(
-                                    fontSize: 20,
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('Round',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .displayLarge!
+                                            .color)),
+                                Text(
+                                  '${totalPomodoros % 4}/4',
+                                  style: TextStyle(
+                                    fontSize: 58,
                                     color: Theme.of(context)
                                         .textTheme
                                         .displayLarge!
-                                        .color)),
-                            Text(
-                              '$totalPomodoros',
-                              style: TextStyle(
-                                fontSize: 58,
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .displayLarge!
-                                    .color,
-                                fontWeight: FontWeight.w600,
-                              ),
+                                        .color,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('Goal',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .displayLarge!
+                                            .color)),
+                                Text(
+                                  '${(totalPomodoros / 4).floor()}/12',
+                                  style: TextStyle(
+                                    fontSize: 58,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .displayLarge!
+                                        .color,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         )),
