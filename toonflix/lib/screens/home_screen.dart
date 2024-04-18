@@ -81,7 +81,7 @@ class _HomseScreenState extends State<HomseScreen> {
                         fontSize: 89,
                         fontWeight: FontWeight.w600),
                   ))),
-          isRestTime
+          isRunning
               ? const Text("")
               : Flexible(
                   flex: 1,
