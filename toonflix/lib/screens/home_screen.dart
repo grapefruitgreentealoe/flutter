@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:toonflix/models/webtoon.dart';
 import 'package:toonflix/services/api_service.dart';
+import 'package:toonflix/widgets/webtoon_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -54,36 +54,11 @@ class HomeScreen extends StatelessWidget {
       itemCount: snapshot.data!.length, //한번에 얼마나 로딩할건지
       itemBuilder: (context, index) {
         var webtoon = snapshot.data![index];
-        return Column(
-          children: [
-            Container(
-              clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadiusDirectional.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 15,
-                      offset: const Offset(10, 10),
-                      color: Colors.black.withOpacity(0.5),
-                    ),
-                  ]),
-              width: 250,
-              child: Image.network(
-                webtoon.thumb,
-                headers: const {
-                  'Referer': 'https://comic.naver.com',
-                },
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              webtoon.title,
-              style: const TextStyle(fontSize: 22),
-            )
-          ],
-        );
+        return Webtoon(
+            title: webtoon.title,
+            thumb: webtoon.thumb,
+            key: Key(webtoon.id),
+            id: webtoon.id);
       },
       separatorBuilder: (context, index) {
         //listview.separated를 사용할때 리스트 아이템 사이에 렌더됨.
