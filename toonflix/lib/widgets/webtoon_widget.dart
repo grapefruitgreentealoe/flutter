@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:toonflix/widgets/detail_screen.dart';
-import 'package:toonflix/widgets/webtoon_poster.dart';
+import 'package:toonflix/widgets/movie_poster.dart';
 
 class Webtoon extends StatelessWidget {
   final String title, thumb, id;
@@ -22,16 +22,13 @@ class Webtoon extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Hero(
-            tag: id,
-            child: WebtoonPoster(thumb: thumb),
-          ),
+          MoviePoster(thumb: thumb),
           const SizedBox(
             height: 0,
           ),
           Text(
             title,
-            style: const TextStyle(fontSize: 22),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
           )
         ],
       ),

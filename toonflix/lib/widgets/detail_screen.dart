@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:toonflix/models/webtoon_detail.mode.dart';
-import 'package:toonflix/models/webtoon_episode_model.dart';
+import 'package:toonflix/models/movie_detail.mode.dart';
 import 'package:toonflix/services/api_service.dart';
-import 'package:toonflix/widgets/webtoon_poster.dart';
+import 'package:toonflix/widgets/movie_poster.dart';
 
 class DetailScreen extends StatefulWidget {
   final String title, thumb, id;
@@ -15,54 +14,74 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  late Future<WebtoonDetailModel> webtoon;
-  late Future<List<WebtoonEpisodeModel>> episodes;
-
+  late Future<MovieDetailModel> movie;
   @override
   void initState() {
     super.initState();
-    webtoon = ApiService.getMovieId(widget.id);
+    movie = ApiService.getMovieId(widget.id);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          shadowColor: Colors.black,
-          centerTitle: true,
-          elevation: 10,
-          toolbarHeight: 80,
-          foregroundColor: Colors.green,
-          backgroundColor: Colors.white,
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon:
-                  // isClicked
-                  //     ? const Icon(Icons.favorite_rounded)
-                  //     :
-                  const Icon(Icons.favorite_outlined),
-            )
-          ],
-          title: Text(
-            widget.title,
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-          ),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        centerTitle: true,
+        toolbarHeight: 80,
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.favorite_outlined),
+          )
+        ],
+        title: Text(
+          widget.title,
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
         ),
-        body: MovieListBox(widget: widget, webtoon: webtoon));
+      ),
+      body: FutureBuilder<MovieDetailModel>(
+        future: movie,
+        builder: (context, snapshot) {
+          print(snapshot.data);
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+
+            // return const Text('ll');
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            return _buildBody(snapshot.data!);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildBody(MovieDetailModel movieDetail) {
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: NetworkImage(
+              "https://image.tmdb.org/t/p/w500/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg"), // Assuming there's a field called imageUrl in MovieDetailModel
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: MovieInfo(widget: widget, movie: movie),
+    );
   }
 }
 
-class MovieListBox extends StatelessWidget {
-  const MovieListBox({
+class MovieInfo extends StatelessWidget {
+  const MovieInfo({
     super.key,
     required this.widget,
-    required this.webtoon,
+    required this.movie,
   });
 
   final DetailScreen widget;
-  final Future<WebtoonDetailModel> webtoon;
+  final Future<MovieDetailModel> movie;
 
   @override
   Widget build(BuildContext context) {
@@ -75,43 +94,12 @@ class MovieListBox extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Hero(
-                  tag: widget.id,
-                  child: WebtoonPoster(thumb: widget.thumb),
-                ),
+                MoviePoster(thumb: widget.thumb),
               ],
             ),
             const SizedBox(
               height: 20,
             ),
-            FutureBuilder(
-                future: webtoon,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          snapshot.data!.about,
-                          style: const TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          "${snapshot.data!.genre} / ${snapshot.data!.age}",
-                          style: const TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    );
-                  } else {
-                    return const Text('...');
-                  }
-                }),
             const SizedBox(
               height: 25,
             ),

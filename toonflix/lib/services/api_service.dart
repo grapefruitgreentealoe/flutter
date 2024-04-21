@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:toonflix/models/popular_movie.dart';
-import 'package:toonflix/models/webtoon_detail.mode.dart';
+import 'package:toonflix/models/movie_detail.mode.dart';
 
 class ApiService {
   static const String baseUrl = "https://movies-api.nomadcoders.workers.dev";
@@ -48,12 +48,13 @@ class ApiService {
     throw Error();
   }
 
-  static Future<WebtoonDetailModel> getMovieId(String id) async {
+  static Future<MovieDetailModel> getMovieId(String id) async {
     final url = Uri.parse("$baseUrl/movie?id=$id");
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final webtoon = jsonDecode(response.body);
-      return WebtoonDetailModel.fromJson(webtoon);
+      final movie = jsonDecode(response.body);
+      print(movie);
+      return MovieDetailModel.fromJson(movie);
     }
     throw Error();
   }
