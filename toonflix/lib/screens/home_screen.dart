@@ -34,7 +34,7 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(
                   height: 50,
                 ),
-                Expanded(child: makeList(snapshot)),
+                Flexible(child:makeList(snapshot)),
               ],
             );
           } else {
