@@ -25,46 +25,130 @@ class _DetailScreenState extends State<DetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: true,
-        toolbarHeight: 80,
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.transparent,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.favorite_outlined),
-          )
-        ],
-        title: Text(
-          widget.title,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-        ),
-      ),
-      body: FutureBuilder<MovieDetailModel>(
-        future: movie,
-        builder: (context, snapshot) {
-          print(snapshot.data);
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+      body: Stack(children: [
+        Container(
+          constraints: const BoxConstraints.expand(),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/images/bulb.jpg"),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: FutureBuilder<MovieDetailModel>(
+            future: movie,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
 
-            // return const Text('ll');
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            return _buildBody(snapshot.data!);
-          }
-        },
-      ),
+                // return const Text('ll');
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                return _buildBody(snapshot.data!);
+              }
+            },
+          ),
+        ),
+        FutureBuilder<MovieDetailModel>(
+          future: movie,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else {
+              return Padding(
+                padding: const EdgeInsets.all(11.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AppBar(
+                      title: const Text(
+                        'Back to list',
+                      ),
+                      centerTitle: true,
+                      toolbarHeight: 80,
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.transparent,
+                    ),
+                    const SizedBox(
+                      height: 200,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(snapshot.data!.title,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800)),
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.star_outlined,
+                              color: Colors.amberAccent,
+                            ),
+                            Icon(
+                              Icons.star_outlined,
+                              color: Colors.amberAccent,
+                            ),
+                            Icon(
+                              Icons.star_outlined,
+                              color: Colors.amberAccent,
+                            ),
+                            Icon(
+                              Icons.star_outlined,
+                              color: Colors.amberAccent,
+                            ),
+                            Icon(
+                              Icons.star_outlined,
+                              color: Colors.amberAccent,
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            for (var genre in snapshot.data!.genres)
+                              Text(genre['name'],
+                                  style: const TextStyle(color: Colors.white)),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 60,
+                        ),
+                        const Text('Storyline',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700)),
+                        Text(snapshot.data!.overview,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600)),
+                      ],
+                    )
+                  ],
+                ),
+              );
+            }
+          },
+        ),
+      ]),
     );
   }
 
   Widget _buildBody(MovieDetailModel movieDetail) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
           image: NetworkImage(
-              "https://image.tmdb.org/t/p/w500/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg"), // Assuming there's a field called imageUrl in MovieDetailModel
+              scale: BorderSide.strokeAlignOutside,
+              "https://image.tmdb.org/t/p/w500${movieDetail.backdrop_path}"), // Assuming there's a field called imageUrl in MovieDetailModel
           fit: BoxFit.cover,
         ),
       ),
@@ -85,22 +169,16 @@ class MovieInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return const SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(50),
+        padding: EdgeInsets.all(50),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MoviePoster(thumb: widget.thumb),
-              ],
-            ),
-            const SizedBox(
+            SizedBox(
               height: 20,
             ),
-            const SizedBox(
+            SizedBox(
               height: 25,
             ),
           ],

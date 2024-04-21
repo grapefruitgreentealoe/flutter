@@ -1,7 +1,7 @@
 class MovieDetailModel {
   final String backdrop_path, title, overview;
   final double vote_average;
-  final List<Map<String, dynamic>> genres;
+  final List<dynamic> genres;
   MovieDetailModel.fromJson(
       Map<String, dynamic> json) //named constructor 이름이 있는 클래스 생성자.
       : backdrop_path = json['backdrop_path'],
