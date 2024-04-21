@@ -1,9 +1,0 @@
-class WebtoonModel {
-  final String title, thumb, id;
-  WebtoonModel.fromJson(
-      Map<String, dynamic> json) //named constructor 이름이 있는 클래스 생성자.
-      : title = json['title'],
-        thumb = json['thumb'],
-        id = json['id'];
-}
-

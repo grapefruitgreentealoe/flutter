@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:toonflix/models/webtoon.dart';
+import 'package:toonflix/models/popular_movie.dart';
 import 'package:toonflix/services/api_service.dart';
 import 'package:toonflix/widgets/webtoon_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
 
-  final Future<List<WebtoonModel>> webtoons = ApiService.getTodaysToons();
+  final Future<List<MovieModel>> playingMovies = ApiService.getPlayingMovies();
+  final Future<List<MovieModel>> popularMovies = ApiService.getPopularMovies();
+  final Future<List<MovieModel>> upcomingMovie = ApiService.getUpcomingMovie();
 
   @override
   Widget build(BuildContext context) {
@@ -24,31 +26,65 @@ class HomeScreen extends StatelessWidget {
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
         ),
       ),
-      body: FutureBuilder(
-        future: webtoons,
-        builder: (context, snapshot) {
-          //snapshot을 이용하면 future의 상태를 알 수 있다.
-          if (snapshot.hasData) {
-            return Column(
-              children: [
-                const SizedBox(
-                  height: 50,
-                ),
-                Flexible(child:makeList(snapshot)),
-              ],
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FutureBuilder(
+              future: playingMovies,
+              builder: (context, snapshot) {
+                //snapshot을 이용하면 future의 상태를 알 수 있다.
+                if (snapshot.hasData) {
+                  return Column(
+                    children: [
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Flexible(
+                        fit: FlexFit.tight,
+                        child: makeList(snapshot),
+                      ),
+                    ],
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
+            FutureBuilder(
+              future: upcomingMovie,
+              builder: (context, snapshot) {
+                //snapshot을 이용하면 future의 상태를 알 수 있다.
+                if (snapshot.hasData) {
+                  return Column(
+                    children: [
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Flexible(
+                        fit: FlexFit.tight,
+                        child: makeList(snapshot),
+                      ),
+                    ],
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  ListView makeList(AsyncSnapshot<List<WebtoonModel>> snapshot) {
+  ListView makeList(AsyncSnapshot<List<MovieModel>> snapshot) {
     return ListView.separated(
+      shrinkWrap: true,
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       scrollDirection: Axis.horizontal, //스크롤 방향
       itemCount: snapshot.data!.length, //한번에 얼마나 로딩할건지
@@ -56,15 +92,18 @@ class HomeScreen extends StatelessWidget {
         var webtoon = snapshot.data![index];
         return Webtoon(
             title: webtoon.title,
-            thumb: webtoon.thumb,
-            key: Key(webtoon.id),
-            id: webtoon.id);
+            thumb: 'https://image.tmdb.org/t/p/w500${webtoon.backdrop_path}',
+            key: Key('${webtoon.id}'),
+            id: '${webtoon.id}');
       },
       separatorBuilder: (context, index) {
         //listview.separated를 사용할때 리스트 아이템 사이에 렌더됨.
-        return const SizedBox(
-          width: 40,
-        );
+        if (index != snapshot.data!.length - 1) {
+          return const SizedBox(
+            width: 20,
+          );
+        }
+        return const Text('');
       },
     );
   }

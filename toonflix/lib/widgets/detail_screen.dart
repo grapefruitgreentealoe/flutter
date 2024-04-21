@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:toonflix/models/webtoon_detail.mode.dart';
 import 'package:toonflix/models/webtoon_episode_model.dart';
 import 'package:toonflix/services/api_service.dart';
-import 'package:toonflix/widgets/episode_widget.dart';
 import 'package:toonflix/widgets/webtoon_poster.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -22,8 +21,7 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   void initState() {
     super.initState();
-    webtoon = ApiService.getToonById(widget.id);
-    episodes = ApiService.getLatestEpisodesById(widget.id);
+    webtoon = ApiService.getMovieId(widget.id);
   }
 
   @override
@@ -52,84 +50,74 @@ class _DetailScreenState extends State<DetailScreen> {
             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(50),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+        body: MovieListBox(widget: widget, webtoon: webtoon));
+  }
+}
+
+class MovieListBox extends StatelessWidget {
+  const MovieListBox({
+    super.key,
+    required this.widget,
+    required this.webtoon,
+  });
+
+  final DetailScreen widget;
+  final Future<WebtoonDetailModel> webtoon;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(50),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Hero(
-                      tag: widget.id,
-                      child: WebtoonPoster(thumb: widget.thumb),
-                    ),
-                  ],
+                Hero(
+                  tag: widget.id,
+                  child: WebtoonPoster(thumb: widget.thumb),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                FutureBuilder(
-                    future: webtoon,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              snapshot.data!.about,
-                              style: const TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Text(
-                              "${snapshot.data!.genre} / ${snapshot.data!.age}",
-                              style: const TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        );
-                      } else {
-                        return const Text('...');
-                      }
-                    }),
-                const SizedBox(
-                  height: 25,
-                ),
-                FutureBuilder(
-                    future: episodes,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Flexible(
-                          child: ListView.separated(
-                              separatorBuilder: (context, index) {
-                                return const SizedBox(
-                                  height: 10,
-                                );
-                              },
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 13),
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: (context, index) {
-                                var episode = snapshot.data![index];
-                                return Episode(
-                                    episode: episode, webtoonId: widget.id);
-                              }),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    })
               ],
             ),
-          ),
-        ));
+            const SizedBox(
+              height: 20,
+            ),
+            FutureBuilder(
+                future: webtoon,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          snapshot.data!.about,
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "${snapshot.data!.genre} / ${snapshot.data!.age}",
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return const Text('...');
+                  }
+                }),
+            const SizedBox(
+              height: 25,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

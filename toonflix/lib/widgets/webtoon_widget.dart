@@ -20,13 +20,14 @@ class Webtoon extends StatelessWidget {
         );
       },
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Hero(
             tag: id,
             child: WebtoonPoster(thumb: thumb),
           ),
           const SizedBox(
-            height: 10,
+            height: 0,
           ),
           Text(
             title,
