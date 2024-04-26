@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class MovieModel {
   final String backdrop_path,
       original_language,
